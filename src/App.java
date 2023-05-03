@@ -34,7 +34,6 @@ public class App extends Application {
         Group root = new Group();
         root.getChildren().add(btn);
         
-        
         root.getChildren().add(player);
         ghosts.add(ghost);
         root.getChildren().add(ghost);
@@ -48,7 +47,7 @@ public class App extends Application {
         AnimationTimer loop = new TimerMethod();
         loop.start();
         
-        Scene scene = new Scene(root, 300, 250);
+        Scene scene = new Scene(root, 640, 640);
 
         scene.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
             if(key.getCode() == KeyCode.W) {
@@ -66,7 +65,7 @@ public class App extends Application {
 
         
         
-        primaryStage.setTitle("Hello World!");
+        primaryStage.setTitle("Pac-Man");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
