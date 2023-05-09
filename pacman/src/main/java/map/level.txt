@@ -1,7 +1,7 @@
 ##############
 #cccccccccccc#
 #c####c#####c#
-#p#--#c#---#c#
+#p####c#####c#
 #c####c#####c#
 #ccccccccccccc
 #c####c##c####

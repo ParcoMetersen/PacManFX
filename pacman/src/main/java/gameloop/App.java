@@ -1,3 +1,5 @@
+package gameloop;
+
 import java.util.ArrayList;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
