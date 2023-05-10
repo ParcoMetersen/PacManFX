@@ -1,6 +1,8 @@
 package gameloop;
 
 import java.util.ArrayList;
+
+import components.Entity;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -12,11 +14,11 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import map.levelLoarder;
  
 public class App extends Application {
     public static char dia = ' ';
     public static Rectangle player = new Rectangle(150, 100, 50, 50);
-    public Rectangle ghost = new Rectangle(0, 150, 25, 25);
 
     public static ArrayList<Rectangle> ghosts = new ArrayList<>();
 
@@ -31,14 +33,27 @@ public class App extends Application {
             }
         });
 
+        levelLoarder level = new levelLoarder();
+        level.fillLevel();
         
         
         Group root = new Group();
         root.getChildren().add(btn);
+
+        Entity[][] bord = level.getLevel();
+
+        for(int i = 0; i < level.getLevel().length; i++) {
+            for(int j = 0; j < level.getLevel()[j].length; j++) {
+                root.getChildren().add(level.getLevel()[i][j].render());
+            }
+        }
         
+        
+        
+
+        root.getChildren().get(0).setTranslateX(100);
+
         root.getChildren().add(player);
-        ghosts.add(ghost);
-        root.getChildren().add(ghost);
         
 
         /*
