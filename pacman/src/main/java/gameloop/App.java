@@ -5,11 +5,8 @@ import java.util.ArrayList;
 import components.Entity;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.shape.Rectangle;
@@ -17,43 +14,32 @@ import javafx.stage.Stage;
 import map.levelLoarder;
  
 public class App extends Application {
+
+    public static int size = 20;
+    public static levelLoarder level;
+
     public static char dia = ' ';
-    public static Rectangle player = new Rectangle(150, 100, 50, 50);
+    public static Rectangle player = new Rectangle(size, size, size, size);
+    public Rectangle ghost = new Rectangle(0, 150, 25, 25);
 
     public static ArrayList<Rectangle> ghosts = new ArrayList<>();
 
     @Override
     public void start(Stage primaryStage) {
-        Button btn = new Button();
-        btn.setText("Say 'Hello World'");
-        btn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("you clicked me!");
-            }
-        });
-
-        levelLoarder level = new levelLoarder();
+        level = new levelLoarder(size);
         level.fillLevel();
         
         
         Group root = new Group();
-        root.getChildren().add(btn);
-
-        Entity[][] bord = level.getLevel();
 
         for(int i = 0; i < level.getLevel().length; i++) {
             for(int j = 0; j < level.getLevel()[j].length; j++) {
                 root.getChildren().add(level.getLevel()[i][j].render());
             }
         }
-        
-        
-        
-
-        root.getChildren().get(0).setTranslateX(100);
-
         root.getChildren().add(player);
+        // ghosts.add(ghost);
+        // root.getChildren().add(ghost);
         
 
         /*
@@ -62,26 +48,26 @@ public class App extends Application {
         */
 
         AnimationTimer loop = new TimerMethod();
-        loop.start();
         
-        Scene scene = new Scene(root, 640, 640);
+        Scene scene = new Scene(root, size*level.getLevel()[0].length, size*level.getLevel().length);
 
         scene.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
-            if(key.getCode() == KeyCode.W) {
+            Entity[] objs = level.nextTo(level.scaleValue(player.getX()),
+            level.scaleValue(player.getY()));
+
+            if(key.getCode() == KeyCode.W && objs[0].tag() != "Wall") {
                 dia = 'W';
-            } else if(key.getCode() == KeyCode.S) {
+            } else if(key.getCode() == KeyCode.S && objs[2].tag() != "Wall") {
                 dia = 'S';
-            } else if(key.getCode() == KeyCode.A) {
+            } else if(key.getCode() == KeyCode.A && objs[3].tag() != "Wall") {
                 dia = 'A';
-            } else if(key.getCode() == KeyCode.D) {
+            } else if(key.getCode() == KeyCode.D && objs[1].tag() != "Wall") {
                 dia = 'D';
             }
-            
-            loop.start();
         });
 
         
-        
+        loop.start();
         primaryStage.setTitle("Pac-Man");
         primaryStage.setScene(scene);
         primaryStage.show();

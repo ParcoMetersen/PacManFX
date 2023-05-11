@@ -17,13 +17,16 @@ public class levelLoarder {
     private static char[] _egdeCase = {'#', '#', '#', '#'};
     private static List<String> data = new ArrayList<>();
 
-    public levelLoarder() {
+    private int size;
+
+    public levelLoarder(int size) {
         try {
             File myObj = new File("src/main/java/map/level.txt");
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 data.add(myReader.nextLine());
             }
+            this.size = size;
 
             this.level = new Entity[data.size()][data.get(0).length()*2];
             myReader.close();
@@ -42,39 +45,36 @@ public class levelLoarder {
         }
     }
 
-    private static int loopingX(int x) {
-        if (x > data.get(0).length()-1) {
-            return data.get(0).length()-1 - (x%data.get(0).length());
-        } else {
-            return x;
-        }
-    }
-
-    private static Entity getEntityType(int x, int y) {
+    private Entity getEntityType(int x, int y) {
         char current = data.get(y).charAt(loopingX(x));
         
-        
-        Rectangle rec = new Rectangle(x*16, y*16, 16, 16);
+        Rectangle rec = new Rectangle(x*this.size, y*this.size, this.size, this.size);
+        rec.setFill(Color.GRAY);
+        String tag = "";
         rec.setFill(Color.WHITE);
         if (current == '-') {
             rec.setFill(Color.BLACK);
         }
         else if (current == 'c') {
+            tag = "Coin";
             rec.setFill(Color.YELLOW);
         } else if (current == 'p') {
+            tag = "Power";
             rec.setFill(Color.PINK);
         } else {
             char[] borders = bordering(loopingX(x), y);
+            tag = "Wall";
             if (Arrays.compare(borders, _egdeCase) == 0) {
+                // char[] egdes = egdes(x, y, data);
                 rec.setFill(Color.GREEN);
             } else {
                 rec.setFill(Color.BLUE);
             }
         }
-        return new Entity(rec);
+        return new Entity(rec, tag);
     }
 
-    private static char[] bordering(int x, int y) {
+    private char[] bordering(int x, int y) {
         char[] bordering = new char[4];
         if(x > 0) {
             bordering[3] = data.get(y).charAt(x-1);
@@ -95,7 +95,7 @@ public class levelLoarder {
 
         return bordering;
     }
-    private static char[] egdes(int x, int y, List<String> data) {
+    private char[] egdes(int x, int y, List<String> data) {
         char[] egdes = new char[4];
         egdes[4] = data.get(y+1).charAt(x+1);
         egdes[5] = data.get(y-1).charAt(x+1);
@@ -105,15 +105,42 @@ public class levelLoarder {
         return egdes;
     }
 
-    public Entity[] bordering(int x, int y) {
-        return new Entity[1];
+    private static int loopingX(int x) {
+        if (x > data.get(0).length()-1) {
+            return data.get(0).length()-1 - (x%data.get(0).length());
+        } else {
+            return x;
+        }
     }
 
+    public int scaleValue(double n) {
+        return (int) n/size;
+    }
+
+    public Entity position(int x, int y) {
+        return this.level[y][x];
+    }
+
+    public Entity[] nextTo(int x, int y) {
+        Entity[] objs = new Entity[4];
+
+        if (y > 0) {
+            objs[0] = this.level[y-1][x];
+        }
+        if (y < this.level.length) {
+            objs[2] = this.level[y+1][x];
+        }
+        if (x < this.level[y].length) {
+            objs[1] = this.level[y][x+1];
+        }
+        if (x > 0) {
+            objs[3] = this.level[y][x-1];
+        }
+
+        return objs;
+    }
 
     public Entity[][] getLevel() {
         return this.level;
-    }
-    public List<String> getData() {
-        return this.data;
     }
 }
